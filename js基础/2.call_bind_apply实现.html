@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function fn1() {
+      console.log(">>1", this, ...arguments);
+    }
+    function fn2() {
+      console.log(">>2", this, ...arguments);
+    }
+    // call
+    // this指向，运行函数
+    Function.prototype.call = function(context) {
+      context = context ? Object(context) : window;
+      context.fn = this;
+
+      let arg = [];
+      for (var i = 1; i < arguments.length; i++) {
+        arg.push("arguments[" + i + "]"); //['','']
+      }
+      //利用了 数组的toString特性，和eval指向js的属性
+      let result =  eval("context.fn(" + arg + ")");
+
+      delete context.fn;
+      return result
+    };
+    fn1.call("hello", 1, 'a'); //Object(context)就是因为这个
+    // // fn1.call(fn2, 1);
+    // fn1.call.call(fn2); //fn1.call 就是Function.prototype.call, 把它看错普通fn3.call(fn2) => 然后 context.fn = call函数了;
+
+    
+    // apply
+    // this指向，运行函数
+    Function.prototype.apply = function(context, arr) {
+      context = context ? Object(context) : window;
+      context.fn = this;
+      const args = [];
+      for(var i = 0; i < arr.length; i++) {
+        args.push('arr[' + i + ']');
+      }
+      let result = eval("context.fn(" + args + ")");
+      delete context.fn;
+      return result;
+    };
+    function fnApplyTest() {
+      console.log(">>1", this, ...arguments);
+    }
+    fnApplyTest.apply("hello",[12121,'b']); //Object(context)就是因为这个
+
+    
+
+    //bind
+    //1) this指向，bind返回一个绑定后的函数
+    // 2） 如果绑定的函数被new了，当前函数的this就是当前的实例
+    Function.prototype.bind = function(content){
+      let that = this;
+      const bindArgs = Array.prototype.slice.call(arguments,1);//不需要第一个obj参数
+      function fBound(){ //this
+        const funcArgs = Array.prototype.slice.call(arguments);
+        that.apply( this instanceof fBound ? this : content, bindArgs.concat(funcArgs));
+      }
+      function Fn(){}// Object.create原理
+      Fn.prototype = this.prototype;
+      fBound.prototype = new Fn();
+      return fBound;
+    }
+    
+    //普通绑定
+    const obj = {
+      name:'霞'
+    }
+    function bindTest (name,size){
+      console.log('bindTest', `${this.name}有${name}个${size}`);
+    }
+    const testA  = bindTest.bind(obj);
+    testA(2,'球');
+
+    //new绑定
+    function bindtestB(){
+      this.say ='ll',
+      console.log(this);
+    }
+    const testB =  bindtestB.bind('1');
+    new testB();
+
+    //方法原型改变 在bind之前操作prototy
+    function bindtestC(){};
+    bindtestC.prototype.a= 3;
+    const testc =  new bindtestC(1);
+    
+    console.log('prototype a ', testc.a)
+
+  </script>
+</body>
+</html>
