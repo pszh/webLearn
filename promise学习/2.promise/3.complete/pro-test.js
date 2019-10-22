@@ -1,3 +1,4 @@
+const Promise = require('./promise');
 const fs = require("fs");
 
 function read(filename, encoding) {
