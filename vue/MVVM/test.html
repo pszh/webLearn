@@ -9,8 +9,8 @@
   <body>
     <div id="app">
       <input type="text" v-model="person.name" />
-      <div>{{ school.name }}</div>
-      <div>{{ school.age }}</div>
+      <div>{{ person.name }}</div>
+      <div>{{ person.age }}</div>
     </div>
 
     <script src="MVVM.js"></script>
@@ -20,7 +20,7 @@
         data: {
           person: {
             name: "pszh",
-            aeg: 10
+            age: 10
           }
         }
       });
