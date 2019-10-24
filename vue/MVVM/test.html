@@ -9,8 +9,10 @@
   <body>
     <div id="app">
       <input type="text" v-model="person.name" />
-      <div>{{ person.name }}</div>
+      <div>{{ dog }}</div>
+      <div>名字{{ person.name }}</div>
       <div>{{ person.age }}</div>
+      <div>名字{{ person.name }}今年{{ person.age }}岁</div>
     </div>
 
     <script src="MVVM.js"></script>
@@ -21,7 +23,8 @@
           person: {
             name: "pszh",
             age: 10
-          }
+          },
+          dog: "小狗"
         }
       });
     </script>

@@ -1,3 +1,70 @@
+//观察者，(发布 订阅)被观察者
+class Dep {
+  constructor() {
+    this.subs = []; // 存放所有的watcher
+  }
+  /** 订阅 */
+  addSub(watcher) {
+    this.subs.push(watcher);
+  }
+  /**发布 */
+  notify() {
+    this.subs.forEach(watcher => watcher.update());
+  }
+}
+class Watcher {
+  constructor(vm, expr, cb) {
+    this.vm = vm;
+    this.expr = expr;
+    this.cb = cb;
+    //默认存放一个老值
+    this.oldValue = this.get();
+  }
+  get() {
+    Dep.target = this;
+    let value = compileUtil.getValue(this.vm, this.expr); //new Watcher()的就会调用observer对应属性中的get了，这个时候会把wathcher 放到dep的数组中 （js单线程）
+    Dep.target = null;
+    return value;
+  }
+  update() {
+    // 更新操作， 数据变化后  会调用 观察者的update方法
+    let newVal = compileUtil.getValue(this.vm, this.expr);
+    if (newVal != this.oldValue) {
+      this.cb(newVal);
+    }
+  }
+}
+//实现数据劫持 (给每个属性设置get set)
+class Observer {
+  constructor(data) {
+    this.observer(data);
+  }
+  observer(data) {
+    if (data && typeof data == "object") {
+      for (let key in data) {
+        this.defineReactive(data, key, data[key]);
+      }
+    }
+  }
+  defineReactive(obj, key, value) {
+    this.observer(value); //value可能是对象
+    const dep = new Dep();
+    Object.defineProperty(obj, key, {
+      get() {
+        Dep.target && dep.addSub(Dep.target); //添加订阅
+        return value;
+      },
+      set: newValue => {
+        if (newValue !== value) {
+          this.observer(value); //新值有可能是对象所以
+          value = newValue;
+          dep.notify(); // 发布订阅
+        }
+      }
+    });
+  }
+}
+
 class Compiler {
   constructor(el, vm) {
     this.vm = vm;
@@ -6,8 +73,6 @@ class Compiler {
 
     //把当前节点中的元素 获取到 放到内存中 (避免回流，重绘制)
     let fragment = this.nodeToFragment(this.el);
-
-    //
 
     // 用数据编译模版 1.找到对应节点的指令，{{}} ；2. 把节点指令，{{}} 中的内容进行替换
     this.compile(fragment);
@@ -90,15 +155,29 @@ compileUtil = {
   model(node, expr, vm) {
     //给输入框赋予value属性， node.value = XXX;
     let fn = this.updater["modelUpdater"];
+    new Watcher(vm, expr, newVal => {
+      //给输入框加一个观察者，如果稍后数据更新会出发回调
+      fn(node, newVal);
+    });
     let value = this.getValue(vm, expr);
     fn(node, value);
   },
   html() {},
   bind() {},
+
+  getContentValue(vm, expr) {
+    return expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+      return this.getValue(vm, args[1]);
+    });
+  },
   text(node, expr, vm) {
-    // expr可能是{{a}} ,{{b}} {{a.b}}
+    // expr可能是{{a}} ,{{b}} {{a.b}}, 名字{{a,b}},名字{{ person.name }}今年{{ person.age }}岁
     let fn = this.updater["modelText"];
     let value = expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+      new Watcher(vm, args[1], newVal => {
+        //fn(node, newVal); //这边这样写的话 名字{{ person.name }}今年{{ person.age }}岁 person的name 和age属性一个更新就会更新成单独的更新的那个属性
+        fn(node, this.getContentValue(vm, expr)); //直接把整个文本节点都更新
+      });
       return this.getValue(vm, args[1]);
     });
     fn(node, value);
@@ -121,6 +200,9 @@ class Vue {
     this.$data = data;
     //这个根元素存在，编译模版
     if (this.$el) {
+      // 把数据 全部转化为Object.defineProperty来定义//所以vue需要ie8以上
+      new Observer(this.$data);
+      // 数据挂载
       new Compiler(this.$el, this);
     }
   }
