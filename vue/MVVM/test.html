@@ -16,6 +16,8 @@
       <!-- 如果数据不变，视图不更新 -->
       <div>{{ getNewName }}</div>
       <button v-on:click="change">点击变名字</button>
+      <!-- test v-html -->
+      <div v-html="htmlData"></div>
     </div>
 
     <script src="MVVM.js"></script>
@@ -27,7 +29,8 @@
             name: "pszh",
             age: 10
           },
-          dog: "小狗"
+          dog: "小狗",
+          htmlData: "<span style='color:red'>v-html测试</span>"
         },
         computed: {
           getNewName() {

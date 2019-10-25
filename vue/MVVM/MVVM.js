@@ -140,6 +140,13 @@ class Compiler {
 }
 
 compileUtil = {
+  /**事件 */
+  on(node, expr, vm, eventName) {
+    //v-on:click='change' expr =>change
+    node.addEventListener(eventName, e => {
+      vm[expr].call(vm, e);
+    });
+  },
   /**取实例上$data的 对应的值*/
   getValue(vm, expr) {
     // vm.$data  'school.name'
@@ -177,14 +184,14 @@ compileUtil = {
     fn(node, value);
   },
 
-  /**事件 */
-  on(node, expr, vm, eventName) {
-    //v-on:click='change' expr =>change
-    node.addEventListener(eventName, e => {
-      vm[expr].call(vm, e);
+  html(node, expr, vm) {
+    let fn = this.updater["htmlUpdater"];
+    let value = this.getValue(vm, expr);
+    new Watcher(vm, expr, newVal => {
+      fn(node, newVal);
     });
+    fn(node, value);
   },
-  html() {},
   bind() {},
 
   getContentValue(vm, expr) {
@@ -209,7 +216,9 @@ compileUtil = {
     modelUpdater(node, value) {
       node.value = value;
     },
-    htmlUpdater() {},
+    htmlUpdater(node, value) {
+      node.innerHTML = value;
+    },
     modelText(node, value) {
       node.textContent = value;
     }
