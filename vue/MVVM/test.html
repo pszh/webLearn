@@ -13,6 +13,9 @@
       <div>名字{{ person.name }}</div>
       <div>{{ person.age }}</div>
       <div>名字{{ person.name }}今年{{ person.age }}岁</div>
+      <!-- 如果数据不变，视图不更新 -->
+      <div>{{ getNewName }}</div>
+      <button v-on:click="change">点击变名字</button>
     </div>
 
     <script src="MVVM.js"></script>
@@ -25,6 +28,16 @@
             age: 10
           },
           dog: "小狗"
+        },
+        computed: {
+          getNewName() {
+            return this.person.name + "帅";
+          }
+        },
+        methods: {
+          change() {
+            this.person.name = "政";
+          }
         }
       });
     </script>

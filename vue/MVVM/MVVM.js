@@ -97,12 +97,13 @@ class Compiler {
     [...attributes].forEach(attr => {
       let { name, value: expr } = attr;
       if (this.isDirective(name)) {
-        //name 可能是 v-model, v-html, v-bind
+        //name 可能是 v-model, v-html, v-bind,
         //判断是否有指令，单独处理
         console.log("compileElement", name, expr);
         let [, directive] = name.split("-");
+        let [directiveName, eventName] = directive.split(":"); //v-on:click
         //调用对应的指令处理
-        compileUtil[directive](node, expr, this.vm);
+        compileUtil[directiveName](node, expr, this.vm, eventName);
       }
     });
   }
@@ -175,6 +176,14 @@ compileUtil = {
     let value = this.getValue(vm, expr);
     fn(node, value);
   },
+
+  /**事件 */
+  on(node, expr, vm, eventName) {
+    //v-on:click='change' expr =>change
+    node.addEventListener(eventName, e => {
+      vm[expr].call(vm, e);
+    });
+  },
   html() {},
   bind() {},
 
@@ -187,7 +196,7 @@ compileUtil = {
     // expr可能是{{a}} ,{{b}} {{a.b}}, 名字{{a,b}},名字{{ person.name }}今年{{ person.age }}岁
     let fn = this.updater["modelText"];
     let value = expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
-      new Watcher(vm, args[1], newVal => {
+      new Watcher(vm, args[1], () => {
         //fn(node, newVal); //这边这样写的话 名字{{ person.name }}今年{{ person.age }}岁 person的name 和age属性一个更新就会更新成单独的更新的那个属性
         fn(node, this.getContentValue(vm, expr)); //直接把整个文本节点都更新
       });
@@ -208,16 +217,34 @@ compileUtil = {
 };
 
 class Vue {
-  constructor({ el, data }) {
-    this.$el = el;
-    this.$data = data;
+  constructor(options) {
+    this.$el = options.el;
+    this.$data = options.data;
+    let computed = options.computed;
+    let methods = options.methods;
     //这个根元素存在，编译模版
     if (this.$el) {
       // 把数据 全部转化为Object.defineProperty来定义//所以vue需要ie8以上
       new Observer(this.$data);
-
       // vm上取值操作代理到 vm.$data上
       this.proxyVm(this.$data);
+
+      //把计算属性挂载到$data上 因为他渲染的时候是compileText，通过getValue()取值的
+      for (let key in computed) {
+        Object.defineProperty(this.$data, key, {
+          get: () => {
+            return computed[key].call(this); //computed中的this指的是vue的实例，所以改变箭头指向
+          }
+        });
+      }
+      //方法挂载到vue实例子上 函数的指向在compileUtil[on]中函数调用的时候做的
+      for (let key in methods) {
+        Object.defineProperty(this, key, {
+          get() {
+            return methods[key];
+          }
+        });
+      }
 
       // 数据挂载
       new Compiler(this.$el, this);
