@@ -146,6 +146,15 @@ compileUtil = {
       return data[current.trim()];
     }, vm.$data);
   },
+  /**设置$data的对应的值 */
+  setValue(vm, expr, value) {
+    return expr.split(".").reduce((data, current, index, arr) => {
+      if (arr.length - 1 === index) {
+        data[current.trim()] = value;
+      }
+      return data[current.trim()];
+    }, vm.$data);
+  },
   /**
    *
    * @param {*} node 当前节点
@@ -158,6 +167,10 @@ compileUtil = {
     new Watcher(vm, expr, newVal => {
       //给输入框加一个观察者，如果稍后数据更新会出发回调
       fn(node, newVal);
+    });
+    //实现数据的双向绑定
+    node.addEventListener("input", event => {
+      this.setValue(vm, expr, event.target.value);
     });
     let value = this.getValue(vm, expr);
     fn(node, value);
@@ -202,8 +215,25 @@ class Vue {
     if (this.$el) {
       // 把数据 全部转化为Object.defineProperty来定义//所以vue需要ie8以上
       new Observer(this.$data);
+
+      // vm上取值操作代理到 vm.$data上
+      this.proxyVm(this.$data);
+
       // 数据挂载
       new Compiler(this.$el, this);
+    }
+  }
+  /**给vm上做key代理到data[key]上 */
+  proxyVm(data) {
+    for (let key in data) {
+      Object.defineProperty(this, key, {
+        get() {
+          return data[key];
+        },
+        set(value) {
+          data[key] = value;
+        }
+      });
     }
   }
 }
