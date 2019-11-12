@@ -192,7 +192,6 @@ compileUtil = {
     });
     fn(node, value);
   },
-  bind() {},
 
   getContentValue(vm, expr) {
     return expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
