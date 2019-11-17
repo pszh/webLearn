@@ -22,7 +22,8 @@
  *  });
  *
  */
-
+1:12 总结
+https://ke.qq.com/course/272058?taid=3859221389256378
 const axios = require("axios");
 const store = require("vue中的状态管理器");
 
@@ -38,8 +39,9 @@ class Request {
   }
   setInterceptor(instance, url) {
     //每次请求时，加一个loading效果
-    //更改请求头
+    
     instance.interceptors.request.use(config => {
+      //更改请求头, 
       config.headers.Authorization = "XXX";
       if (Object.keys(this.queue).length === 0) {
         store.commit("showLoading");
