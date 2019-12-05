@@ -1,0 +1,6 @@
+@import "./b.css";
+
+div {
+  transform: rotate(45deg);
+  background-image: url("./image.jpg");
+}

@@ -86,14 +86,38 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/a.css":
+/*!*******************!*\
+  !*** ./src/a.css ***!
+  \*******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("// extracted by mini-css-extract-plugin\n\n//# sourceURL=webpack:///./src/a.css?");
+
+/***/ }),
+
+/***/ "./src/image.jpg":
+/*!***********************!*\
+  !*** ./src/image.jpg ***!
+  \***********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"/img/c853dae0f18c964fe3f105cea94f9d34.jpg\");\n\n//# sourceURL=webpack:///./src/image.jpg?");
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-eval("console.log(\"helloWrod\");\n\n\n//# sourceURL=webpack:///./src/index.js?");
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _image_jpg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./image.jpg */ \"./src/image.jpg\");\n/* harmony import */ var _a_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./a.css */ \"./src/a.css\");\n/* harmony import */ var _a_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_a_css__WEBPACK_IMPORTED_MODULE_1__);\n// webpack 打包图片\n// 1)在js中创建图片\n //引入图片，返回一个新地址 （file-loader）为了可以根据大小编译base64 所以用url-loader\n\nvar img = new Image();\nimg.src = _image_jpg__WEBPACK_IMPORTED_MODULE_0__[\"default\"];\ndocument.body.appendChild(img); // 2）在css引入background（'url'） // css-loader回操作\n// 3) <img src=\"\" /img> html-withimg-loader\n\n\n\nvar a = function a() {\n  console.log(\"helloWrod\");\n};\n\na();\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 
