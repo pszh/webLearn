@@ -15,6 +15,14 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "output.js" //使用hash值  "output[hash:8].js"
   },
+  resolve: {
+    alias: {
+      // 别名，  import a from './src/utils/a.js' 简写 import a from 'utils/a.js'
+      utils: path.resolve(__dirname, "src/utils/")
+    },
+    extensions: [".js", ".vue", ".css", ".json"] // 引入文件时候没有后缀名会按照这个次序去找
+  },
+
   module: {
     //  模块
     rules: [

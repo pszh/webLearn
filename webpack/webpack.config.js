@@ -1,77 +1,70 @@
-// webpack 为node写法
-let path = require("path");
-
-let HtmlWebpacklugin = require("html-webpack-plugin");
-let miniCssExtractPlugiin = require("mini-css-extract-plugin");
-let optimizeCss = require("optimize-css-assets-webpack-plugin");
+/**
+ * 1. 配置 开发源码映射 sourcemap
+ *
+ * 2. watch
+ * 3.清空dist， clean-webpack-plugin ，复制文件 copy-webpack-plugin
+ * 4.代理proxy
+ *
+ * */
+const path = require("path");
+let htmlwebpackPlugin = require("html-webpack-plugin");
+let { CleanWebpackPlugin } = require("clean-webpack-plugin");
+let copyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = {
+  mode: "development",
+  entry: {
+    index: "./src/home.js"
+  },
   devServer: {
     // 开发服务器的配置
     port: 3000,
     progress: true,
     contentBase: "./build"
+
+    // 3)通过在express node服务上直接启动webpack, 端口用的就是webpack的端口  express的中间件  webpack-dev-middleware
+
+    // //2） mock数据的 webpack-server-dev就是一个express服务，所以
+    // before(app) {
+    //   app.get("/user", (req, res) => {
+    //     res.json({ name: "change All" });
+    //   });
+    // }
+    // 1）
+    // proxy: {
+    //   '/api': {
+    //     target: "http://localhost:3000", // 遇到 ‘/api’的代理到这个host上
+    //     pathRewrite: { "/api": "" } //重写，把请求路径中的/api=> ''
+    //   }
+    // }
   },
-  mode: "development",
-  entry: "./src/index.js", //入口
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "output[hash:8].js" //使用hash值  "output[hash:8].js"
-    // publicPath: "http://www.pszh.com" //给打包后的js,css,image图片都加上cdn路径 mode:"production"，其他不要加
+    filename: "[name].js",
+    path: path.resolve(__dirname, "dist")
   },
-  module: {
-    //  模块
-    rules: [
-      {
-        test: /\.html$/,
-        use: "html-withimg-loader"
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        // 做一个限制，图片小于 多少k时候，用base64来转化
-        // 否则用file-loader产生真实图片
-        use: {
-          loader: "url-loader",
-          options: {
-            limit: 10 * 1024,
-            outputPath: "img/" //打包路径
-          }
-        }
-      },
-      //规则 css-loader 接续 @import这种语法
-      // style-loader 把css插入到head的标签中
-      //loader 特点: 功能单一； 用法 ：一个loader用字符串，多个[]；顺序：默认从右往左
-      {
-        test: /\.css$/,
-        use: [miniCssExtractPlugiin.loader, "css-loader", "postcss-loader"]
-      },
-      {
-        test: /\.js$/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            // 用babel-loader 把es6-es5
-            presets: ["@babel/preset-env"]
-          }
-        },
-        include: path.resolve(__dirname, "src"),
-        exclude: /node_modules/
-      }
-    ]
+
+  //1)源码映射， 单独生成一个.map文件，出错会定位到报错的行和列   文件大且全
+  //devtool: "source-map",
+  // 2) 不会生产单独文件，可以显示行和列
+  devtool: "eval-source-map",
+  //3) 不会产生列，但是是一个单独映射文件
+  // devtool: "cheap-module-source-map", //产生后保留起来
+  // // 4) 不会生成文件， 继承后可以在文件中，不会产生列
+  // devtool: "cheap-module-eval-source-map",
+
+  watch: true,
+  watchOptions: {
+    poll: 1000, // 每秒检测多少次改变
+    aggregateTimeout: 500, // 防抖 毫秒之后在执行
+    ignored: /node_modules/ //忽略文件
   },
+
   plugins: [
-    //数组，存放着所有的webpack插件
-    new HtmlWebpacklugin({
+    new CleanWebpackPlugin(),
+    new htmlwebpackPlugin({
       template: "./src/index.html",
-      filename: "index.html" //输出后的文件名
-      //minify: { // 和 html-withimg-loader会冲突，所以注释
-      // 在 mode:'production', 时候压缩html配置
-      // removeAttributeQuotes: true, //双引号
-      // collapseWhitespace: true //压缩成一行
-      //}
+      filename: "index.html"
     }),
-    new miniCssExtractPlugiin({
-      filename: "main.css" // "css/main.css" 打包分路径，mode:"production"加
-    }),
-    new optimizeCss({})
+    new copyWebpackPlugin([{ from: "./public", to: "./" }]) //把public目录中的文件copy到dist下，
+    // new copyWebpackPlugin([{ from: "./public", to: "./public" }]) //把public目录中的文件copy到dist下的public文件夹下，
   ]
 };
