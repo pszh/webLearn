@@ -1,29 +1,9 @@
+import { setAttr } from "./util";
 class Element {
   constructor(type, props, children) {
     this.type = type;
     this.props = props;
     this.children = children;
-  }
-}
-/**设置属性 */
-function setAttr(node, key, value) {
-  switch (key) {
-    case "value":
-      if (
-        node.tagName.toUpperCase() === "INPUT" ||
-        node.tagName.toUpperCase() === "TEXTAREA"
-      ) {
-        node.value = value;
-      } else {
-        node.setAttribute(key, value);
-      }
-      break;
-    case "style":
-      node.style.cssText = value;
-      break;
-    default:
-      node.setAttribute(key, value);
-      break;
   }
 }
 
@@ -53,4 +33,4 @@ function renderDom(el, target) {
   target.appendChild(el);
 }
 
-export { createElement, render, renderDom };
+export { createElement, render, Element, renderDom };
