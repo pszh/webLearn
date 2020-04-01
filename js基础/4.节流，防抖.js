@@ -2,9 +2,9 @@
 //  eg：王者回程过程中，你在按回程是没用的，只能等第一次回到家之后回程,
 function throttle(fn, interval) {
   let flag = true;
-  return (...args)=> {
+  return (...args) => {
     let context = this;
-    console.log('b',flag)
+    console.log("b", flag);
     if (!flag) return;
     flag = false;
     setTimeout(() => {
@@ -12,14 +12,19 @@ function throttle(fn, interval) {
       flag = true;
     }, interval);
   };
-};
+}
 
-//test 
-i=0
-b = setInterval(throttle(()=>{console.log(i++)},100),50)
+//test
+i = 0;
+b = setInterval(
+  throttle(() => {
+    console.log(i++);
+  }, 100),
+  50
+);
 
 setTimeout(() => {
-  clearInterval(b)
+  clearInterval(b);
 }, 201);
 
 //防抖 每次事件触发则删除原来的定时器，建立新的定时器，(只响应最后一次)
@@ -27,22 +32,48 @@ setTimeout(() => {
 
 function debounce(fn, delay) {
   let timer = null;
-  return  (...args) => {
+  return (...args) => {
     let context = this;
-    if(timer) clearTimeout(timer);
-    console.log('timer',timer);
+    if (timer) clearTimeout(timer);
+    console.log("timer", timer);
     timer = setTimeout(function() {
       fn.apply(context, args);
     }, delay);
-  }
+  };
 }
 
 //test 输出是0，因为()=>{console.log(i++)没有被执行
-i=0;
-b = setInterval(debounce(()=>{console.log(i++)},100),50)
+i = 0;
+b = setInterval(
+  debounce(() => {
+    console.log(i++);
+  }, 100),
+  50
+);
 
 setTimeout(() => {
-  clearInterval(b)
+  clearInterval(b);
 }, 210);
 
-//组合 http://47.98.159.95/my_blog/perform/003.html#%E8%8A%82%E6%B5%81
+//组合 ：因为防抖有时候触发的太频繁会导致一次响应都没有，我们希望到了固定的时间必须给用户一个响应
+
+function throttle(fn, delay) {
+  let last = 0,
+    timer = null;
+  return function(...args) {
+    let now = new Date();
+    if (now - last > delay) {
+      clearTimeout(timer);
+      setTimeout(() => {
+        last = now;
+        fn.apply(this, args);
+      }, delay);
+    } else {
+      // 这个时候表示时间到了，必须给响应
+      last = now;
+      fn.apply(this, args);
+    }
+  };
+}
+
+// 参考 http://47.98.159.95/my_blog/perform/003.html#%E8%8A%82%E6%B5%81
