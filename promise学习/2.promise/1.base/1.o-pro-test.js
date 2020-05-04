@@ -9,13 +9,13 @@
 const Promise = require("./promise");
 let p = new Promise((resolve, reject) => {
   console.log(1);
-  // throw new Error('失败');
+  throw new Error('失败');
   resolve("发财了");
   reject("失败");
   console.log("ll"); // 抛错不执行,其他都是执行的  所以一般 return resolve() 或者return reject()
 });
 console.log(2);
-
+// throw new Error('shibai');
 p.then(
   data => {
     console.log("成功 :", data);
