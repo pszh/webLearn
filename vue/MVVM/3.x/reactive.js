@@ -5,10 +5,6 @@
 function isObject(val) {
   return typeof val === "object" && val !== null;
 }
-/** 是否有属性 */
-function hasOwn(traget, key) {
-  return traget.hasOwnProperty(key);
-}
 /** 工具类 end */
 
 //防止源对象的多次代理
@@ -52,14 +48,14 @@ function createReactiveObject(traget) {
     set: (traget, key, value, receiver) => {
       // traget[key] = value; 设置是否成功不知道，而且数组push会报错，所以不用
       //如何识别  改属性，还是新增属性
-      const hasKey = hasOwn(traget, key); //判断以前有没有
+      const ownkeys = Reflect.ownKeys(traget); //判断以前有没有这个属性
       const oldValue = traget[key];
       const res = Reflect.set(traget, key, value, receiver);
-      if (!hasKey) {
+      if (!ownkeys.includes(key)) {
         // 新属性
         trigger(traget, "add", key);
       } else if (oldValue !== value) {
-        //属性值更改过了
+        // 属性值更改过了
         trigger(traget, "set", key);
       } //为了屏蔽无意义的修改
 
