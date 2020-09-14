@@ -1,0 +1,23 @@
+{
+  "name": "pszh-pack",
+  "version": "1.0.0",
+  "description": "模版自定义webpack",
+  "main": "templeate.js",
+  "scripts": {
+    "test": "cd ./test && pszh-pack"
+  },
+  "bin": {
+    "pszh-pack": "./bin/ps-pack.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/generator": "^7.11.6",
+    "@babel/traverse": "^7.11.5",
+    "@babel/types": "^7.11.5",
+    "babylon": "^6.18.0",
+    "ejs": "^3.1.5",
+    "less": "^3.12.2",
+    "tapable": "^1.1.3"
+  }
+}
