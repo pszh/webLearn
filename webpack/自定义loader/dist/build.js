@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("console.log('自定以loader');\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("console.log(\"自定以loader\");\n// 行内loader基本使用  执行顺序 loader1  inline-loader  loader2\n//require(\"inline-loader!./a.js\");\n\n// 不在通过pre+normal处理  执行顺序inline-loader  loader2\n// require(\"-!inline-loader!./a.js\");\n\n// 不在通过 normal 处理  执行顺序inline-loader  loader2\n//require(\"!inline-loader!./a.js\");\n\n// 不需要 pre normal post 处理，只有inline-loader\n// require(\"!!inline-loader!./a.js\");\n\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 

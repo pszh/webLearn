@@ -1,9 +1,8 @@
 function loader(source) {
-  console.log("loader1");
+  console.log("loader2");
   return source;
 }
 loader.pitch = function() {
-  console.log("loader1 patch");
-  return "test patch";
+  console.log("loader2 patch");
 };
 module.exports = loader;
