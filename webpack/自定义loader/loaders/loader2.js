@@ -3,6 +3,7 @@ function loader(source) {
   return source;
 }
 loader.pitch = function() {
-  console.log("loader2 patch");
+  console.log("loader2 pitch");
+  return "1";
 };
 module.exports = loader;

@@ -4,6 +4,5 @@ function loader(source) {
 }
 loader.pitch = function() {
   console.log("loader1 patch");
-  return "test patch";
 };
 module.exports = loader;
