@@ -10,3 +10,12 @@ console.log("自定以loader");
 
 // 不需要 pre normal post 处理，只有inline-loader
 // require("!!inline-loader!./a.js");
+
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  getName() {
+    return this.name;
+  }
+}

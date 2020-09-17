@@ -14,19 +14,28 @@ module.exports = {
     //   loader1: path.resolve(__dirname, "loaders", "loader1") // 引入自定义loader第二种方式
     // }
   },
+
+  devtool: "source-map",
   module: {
     rules: [
+      // {
+      //   test: /\.js$/,
+      //   use: [
+      //     // path.resolve(__dirname, "loaders", "loader1") // 引入自定义loader第一种方式
+      //     "loader1" // 引入自定义loader第二,三种方式
+      //   ]
+      // },
+      // {
+      //   test: /\.js$/,
+      //   use: { loader: "loader2" },
+      //   enforce: "post"
+      // },
       {
         test: /\.js$/,
-        use: [
-          // path.resolve(__dirname, "loaders", "loader1") // 引入自定义loader第一种方式
-          "loader1" // 引入自定义loader第二,三种方式
-        ]
-      },
-      {
-        test: /\.js$/,
-        use: { loader: "loader2" },
-        enforce: "post"
+        use: {
+          loader: "babel-loader",
+          options: { presets: ["@babel/preset-env"] }
+        }
       }
     ]
   },
