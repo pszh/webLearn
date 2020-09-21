@@ -16,6 +16,7 @@ module.exports = {
   },
 
   devtool: "source-map",
+  watch: true,
   module: {
     rules: [
       // {
@@ -30,11 +31,21 @@ module.exports = {
       //   use: { loader: "loader2" },
       //   enforce: "post"
       // },
+      // {
+      //   test: /\.js$/,
+      //   use: {
+      //     loader: "babel-loader",
+      //     options: { presets: ["@babel/preset-env"] }
+      //   }
+      // }
       {
         test: /\.js$/,
         use: {
-          loader: "babel-loader",
-          options: { presets: ["@babel/preset-env"] }
+          loader: "banner-loader",
+          options: {
+            text: "pszh",
+            filename: path.resolve(__dirname, "src/banner.js")
+          }
         }
       }
     ]

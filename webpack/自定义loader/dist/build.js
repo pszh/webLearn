@@ -91,42 +91,31 @@
   !*** ./src/index.js ***!
   \**********************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-console.log("自定以loader"); // 行内loader基本使用  执行顺序 loader1  inline-loader  loader2
+/**bannerload模版用;
+**/console.log("自定以loader");
+// 行内loader基本使用  执行顺序 loader1  inline-loader  loader2
 //require("inline-loader!./a.js");
+
 // 不在通过pre+normal处理  执行顺序inline-loader  loader2
 // require("-!inline-loader!./a.js");
+
 // 不在通过 normal 处理  执行顺序inline-loader  loader2
 //require("!inline-loader!./a.js");
+
 // 不需要 pre normal post 处理，只有inline-loader
 // require("!!inline-loader!./a.js");
 
-var Person = /*#__PURE__*/function () {
-  function Person(name) {
-    _classCallCheck(this, Person);
-
+class Person {
+  constructor(name) {
     this.name = name;
   }
+  getName() {
+    return this.name;
+  }
+}
 
-  _createClass(Person, [{
-    key: "getName",
-    value: function getName() {
-      return this.name;
-    }
-  }]);
-
-  return Person;
-}();
 
 /***/ })
 
