@@ -86,13 +86,28 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/70f96d4e9e323a95s.jpg":
+/*!***********************************!*\
+  !*** ./src/70f96d4e9e323a95s.jpg ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports="c054422bba494ae060abdecfd7a613c0.[test]"
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _70f96d4e9e323a95s_jpg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./70f96d4e9e323a95s.jpg */ "./src/70f96d4e9e323a95s.jpg");
+/* harmony import */ var _70f96d4e9e323a95s_jpg__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_70f96d4e9e323a95s_jpg__WEBPACK_IMPORTED_MODULE_0__);
 /**bannerload模版用;
 **/console.log("自定以loader");
 // 行内loader基本使用  执行顺序 loader1  inline-loader  loader2
@@ -107,6 +122,7 @@
 // 不需要 pre normal post 处理，只有inline-loader
 // require("!!inline-loader!./a.js");
 
+// 测试 babe-loader
 class Person {
   constructor(name) {
     this.name = name;
@@ -115,6 +131,12 @@ class Person {
     return this.name;
   }
 }
+
+// 测试 file-loader 和url-loader
+
+const img = document.createElement("img");
+img.src = _70f96d4e9e323a95s_jpg__WEBPACK_IMPORTED_MODULE_0___default.a;
+document.body.appendChild(img);
 
 
 /***/ })

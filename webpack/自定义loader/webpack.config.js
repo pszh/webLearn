@@ -47,6 +47,11 @@ module.exports = {
             filename: path.resolve(__dirname, "src/banner.js")
           }
         }
+      },
+      {
+        test: /\.jpg$/,
+        // 目前就根据图片生成一个md5 发射到dist文件下，file-loader还会返回当前路径
+        use: "file-loader"
       }
     ]
   },
