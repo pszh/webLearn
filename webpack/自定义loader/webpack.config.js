@@ -38,29 +38,33 @@ module.exports = {
       //     options: { presets: ["@babel/preset-env"] }
       //   }
       // }
-      {
-        test: /\.js$/,
-        use: {
-          loader: "banner-loader",
-          options: {
-            text: "pszh",
-            filename: path.resolve(__dirname, "src/banner.js")
-          }
-        }
-      },
+      // {
+      //   test: /\.js$/,
+      //   use: {
+      //     loader: "banner-loader",
+      //     options: {
+      //       text: "pszh",
+      //       filename: path.resolve(__dirname, "src/banner.js")
+      //     }
+      //   }
+      // },
       // {
       //   test: /\.jpg$/,
       //   // 目前就根据图片生成一个md5 发射到dist文件下，file-loader还会返回当前路径
       //   use: "file-loader"
       // }
+      // {
+      //   test:/(\.jpg|\.png)$/,
+      //   use:{
+      //     loader:'url-loader',
+      //     options:{
+      //       limit:200*1024
+      //     }
+      //   }
+      // }
       {
-        test:/(\.jpg|\.png)$/,
-        use:{
-          loader:'url-loader',
-          options:{
-            limit:200*1024
-          }
-        }
+        test:/\.less$/,
+        use:['style-loader','css-loader',"less-loader"]
       }
     ]
   },

@@ -12,17 +12,19 @@ console.log("自定以loader");
 // require("!!inline-loader!./a.js");
 
 // 测试 babe-loader
-class Person {
-  constructor(name) {
-    this.name = name;
-  }
-  getName() {
-    return this.name;
-  }
-}
+// class Person {
+//   constructor(name) {
+//     this.name = name;
+//   }
+//   getName() {
+//     return this.name;
+//   }
+// }
 
-// 测试 file-loader 和url-loader
-import p from "./70f96d4e9e323a95s.jpg";
-const img = document.createElement("img");
-img.src = p;
-document.body.appendChild(img);
+// // 测试 file-loader 和url-loader
+// import p from "./70f96d4e9e323a95s.jpg";
+// const img = document.createElement("img");
+// img.src = p;
+// document.body.appendChild(img);
+
+import './index.less';
