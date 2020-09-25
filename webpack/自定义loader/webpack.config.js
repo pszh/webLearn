@@ -48,10 +48,19 @@ module.exports = {
           }
         }
       },
+      // {
+      //   test: /\.jpg$/,
+      //   // 目前就根据图片生成一个md5 发射到dist文件下，file-loader还会返回当前路径
+      //   use: "file-loader"
+      // }
       {
-        test: /\.jpg$/,
-        // 目前就根据图片生成一个md5 发射到dist文件下，file-loader还会返回当前路径
-        use: "file-loader"
+        test:/(\.jpg|\.png)$/,
+        use:{
+          loader:'url-loader',
+          options:{
+            limit:200*1024
+          }
+        }
       }
     ]
   },

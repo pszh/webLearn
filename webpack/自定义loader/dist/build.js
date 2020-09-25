@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports="c054422bba494ae060abdecfd7a613c0.[test]"
+module.exports="c054422bba494ae060abdecfd7a613c0.jpg"
 
 /***/ }),
 
