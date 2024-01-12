@@ -1,0 +1,96 @@
+<!-- requestIdleCallback(callBack,options) 兼容性差 
+     *我们希望快速响应用户，让用户觉得够快，不能阻塞用户的交互
+     *requestIdleCallback使开发者能够在主事件循环上执行后台和低优先级工作，而不会影响延迟关键事件，如动画和输入响应
+     *正常帧任务完成后没超过16 ms,说明时间有富余，此时就会执行 requestIdleCallback 里注册的任务
+     
+     * 参数说明 
+      window.requestIdleCallback(
+        callback: (deaLine: IdleDeadline) => void,
+        option?: {timeout: number} //超过timeout, 如果任务还没有执行，强制执行，不等空闲
+        )
+
+      interface IdleDeadline {
+        didTimeout: boolean // 表示任务执行是否超过约定时间
+        timeRemaining(): DOMHighResTimeStamp // 任务可供执行的剩余时间
+      }
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // react 中使用了messageChannel 模拟实现了requesIdCallBack
+    // const channel = new MessageChannel()
+    // let pendingCallback;
+    // let startTime;
+    // let timeoutTime;
+    // let perFrameTime = (1000 / 60); 1000 毫秒/60次
+    // let timeRemaining = () => perFrameTime - (Date.now() - startTime);
+    // channel.port2.onmessage = () => {
+    //   if (pendingCallback) {
+    //     pendingCallback({ didTimeout: Date.now() > timeoutTime, timeRemaining });
+    //   }
+    // }
+    // window.requestIdleCallback = (callback, options={}) => {
+    //   timeoutTime = Date.now() + options.timeout;
+    //   requestAnimationFrame(() => {
+    //     startTime = Date.now();
+    //     pendingCallback = callback;
+    //     channel.port1.postMessage('hello');
+    //   })
+    //   /* startTime = Date.now();
+    //   setTimeout(() => {
+    //       callback({ didTimeout: Date.now() > timeoutTime, timeRemaining });
+    //   }); */
+    // }
+
+
+    function sleep(d) {
+      for (var t = Date.now(); Date.now() - t <= d;);
+    }
+    const works = [
+      () => {
+        console.log("第1个任务开始");
+        // sleep(0);//
+        sleep(20);
+        console.log("第1个任务结束");
+      },
+      () => {
+        console.log("第2个任务开始");
+        // sleep(0);//sleep(20);
+        console.log("第2个任务结束");
+      },
+      () => {
+        console.log("第3个任务开始");
+        sleep(0);//sleep(20);
+        console.log("第3个任务结束");
+      },
+    ];
+
+    requestIdleCallback(workLoop, { timeout: 1000 });
+    function workLoop(deadline) {
+      console.log('本帧剩余时间', parseInt(deadline.timeRemaining()));
+      while ((deadline.timeRemaining() > 1 || deadline.didTimeout) && works.length > 0) {
+        performUnitOfWork();
+      }
+
+      if (works.length > 0) {
+        console.log(`只剩下${parseInt(deadline.timeRemaining())}ms,时间片到了等待下次空闲时间的调度`);
+        requestIdleCallback(workLoop, { timeout: 1000 });
+      }
+    }
+
+    function performUnitOfWork() {
+      works.shift()();
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!-- requestAnimationFrame(callback) 由浏览器专门为动画提供的API， 回调函数在绘制之前执行
+      * cancelAnimationFrame(返回值) 清除动画
+      * <16.7 丢帧
+      * >16.7 跳跃 卡顿
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="progress-bar" style="background:lightblue;width:0px;height:20px"></div>
+  <button id="btn">开始</button>
+</body>
+<script>
+  let div = document.getElementById('progress-bar');
+  let start;
+
+  function progress() {
+    div.style.width = div.offsetWidth + 1 + 'px'
+    div.innerHtml = (div.offsetWidth) = '%';
+    if (div.offsetWidth < 100) {
+      let current = Date.now();
+      start = current;
+      requestAnimationFrame(progress);
+    }
+  }
+
+  btn.addEventListener('click', () => {
+    div.style.width = 0;// 先把宽度清除 rAf 后面会用到
+    let current = Date.now();// 先获取到当前的时间 current是毫秒数 start = current;
+    requestAnimationFrame(progress);
+  });
+</script>
+
+</html>
